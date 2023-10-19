@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {Button, Dimensions, View} from 'react-native';
 import {AnimatedBlock} from './types';
 import {AnimatedBlockList} from './AnimatedBlockList';
+import {BuglessExample} from './BuglessExample';
 
 const {height, width} = Dimensions.get('window');
 
@@ -46,6 +47,7 @@ export const EmojiMemoryLeak = () => {
       {animatedBlocks.map(animatedBlock => (
         <AnimatedBlockList key={animatedBlock.id} {...animatedBlock} />
       ))}
+      <BuglessExample />
     </View>
   );
 };
