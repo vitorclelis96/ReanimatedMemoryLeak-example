@@ -1,52 +1,59 @@
 import React, {useEffect} from 'react';
 import Animated, {
-  SharedValue,
+  Easing,
   cancelAnimation,
+  runOnJS,
   useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
-// TODO: Move this for the demo
-import {
-  useRotateAnimatedValue,
-  useTranslateXAnimatedValue,
-  useTranslateYAnimatedValue,
-} from './hooks';
 import {View} from 'react-native';
+import {AnimatedBlock} from './types';
 
-type AnimatedBlockItemProps = {
-  animatedValue: SharedValue<number>;
-};
+export const AnimatedBlockItem: React.FC<AnimatedBlock> = React.memo(
+  ({id, onEnd, xPosition, yPosition}) => {
+    const animatedValue = useSharedValue(1);
 
-export const AnimatedBlockItem: React.FC<AnimatedBlockItemProps> = ({
-  animatedValue,
-}) => {
-  const translateXAnimatedValue = useTranslateXAnimatedValue(animatedValue);
-  const translateYAnimatedValue = useTranslateYAnimatedValue(animatedValue);
-  const rotateAnimatedValue = useRotateAnimatedValue(animatedValue);
+    useEffect(() => {
+      animatedValue.value = withTiming(
+        0,
+        {
+          duration: 1200,
+          easing: Easing.linear,
+        },
+        () => {
+          cancelAnimation(animatedValue);
 
-  const textStyle = useAnimatedStyle(() => {
-    return {
-      position: 'absolute',
-      transform: [
-        {translateX: translateXAnimatedValue.value},
-        {translateY: translateYAnimatedValue.value},
-        {rotate: `${rotateAnimatedValue.value}deg`},
-      ],
-    };
-  });
+          runOnJS(onEnd)();
+          /*
+        setTimeout(() => {
+          runOnJS(onEnd)();
+        }, 0)
+        */
+        },
+      );
+    }, []);
 
-  useEffect(() => {
-    return () => {
-      cancelAnimation(translateXAnimatedValue);
-      cancelAnimation(translateYAnimatedValue);
-      cancelAnimation(rotateAnimatedValue);
-    };
-  }, []);
+    const animatedStyle = useAnimatedStyle(() => ({
+      transform: [{scale: animatedValue.value}],
+    }));
 
-  return (
-    <Animated.View style={textStyle}>
+    return (
       <View
-        style={{width: 50, height: 50, backgroundColor: 'red', zIndex: 1}}
-      />
-    </Animated.View>
-  );
-};
+        style={{
+          position: 'absolute',
+          left: xPosition,
+          top: yPosition,
+          zIndex: 10,
+        }}>
+        <Animated.View
+          style={[
+            {width: 50, height: 50, backgroundColor: 'red', zIndex: 1},
+            animatedStyle,
+          ]}
+        />
+      </View>
+    );
+  },
+  (prev, next) => prev.id === next.id,
+);

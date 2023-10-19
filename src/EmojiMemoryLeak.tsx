@@ -1,8 +1,8 @@
 import React, {useCallback, useState} from 'react';
 import {Button, Dimensions, View} from 'react-native';
 import {AnimatedBlock} from './types';
-import {AnimatedBlockList} from './AnimatedBlockList';
 import {BuglessExample} from './BuglessExample';
+import {AnimatedBlockItem} from './AnimatedBlockItem';
 
 const {height, width} = Dimensions.get('window');
 
@@ -45,7 +45,7 @@ export const EmojiMemoryLeak = () => {
         <Button title="Press me" onPress={onButtonPress} />
       </View>
       {animatedBlocks.map(animatedBlock => (
-        <AnimatedBlockList key={animatedBlock.id} {...animatedBlock} />
+        <AnimatedBlockItem key={animatedBlock.id} {...animatedBlock} />
       ))}
       <BuglessExample />
     </View>
