@@ -23,8 +23,6 @@ export const AnimatedBlockItem: React.FC<AnimatedBlockItemProps> = ({
   const translateYAnimatedValue = useTranslateYAnimatedValue(animatedValue);
   const rotateAnimatedValue = useRotateAnimatedValue(animatedValue);
 
-  console.log('nani?!?!');
-
   const textStyle = useAnimatedStyle(() => {
     return {
       position: 'absolute',
@@ -37,22 +35,12 @@ export const AnimatedBlockItem: React.FC<AnimatedBlockItemProps> = ({
   });
 
   useEffect(() => {
-    console.log(
-      `[AnimatedExplosionTextBlockItem][${Date.now()}]: Starting a frame callback`,
-    );
-
     return () => {
-      console.log(
-        `[AnimatedExplosionTextBlockItem][${Date.now()}]: Unmounting the component`,
-      );
-
       cancelAnimation(translateXAnimatedValue);
       cancelAnimation(translateYAnimatedValue);
       cancelAnimation(rotateAnimatedValue);
     };
   }, []);
-
-  console.log('haushua');
 
   return (
     <Animated.View style={textStyle}>
